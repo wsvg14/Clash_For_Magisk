@@ -77,8 +77,6 @@ create_nat_output_filter() {
 
     ${iptables_wait} -t nat -A FILTER_OUT_DNS -m owner --gid-owner ${Clash_group} -j ACCEPT
     ${iptables_wait} -t nat -A FILTER_OUT_DNS -p udp --dport 53 -j DNS_OUT
-
-    
 }
 
 create_nat_prerouting_filter() {
