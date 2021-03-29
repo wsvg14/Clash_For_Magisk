@@ -49,11 +49,15 @@ create_mangle_output_filter() {
 
     if [ "${mode}" = "blacklist" ] ; then
         for appuid in `cat ${appuid_file} | sort -u` ; do
+            ${iptables_wait} -t mangle -A FILTER_OUT_CLASH -p udp --dport 1053 -m owner --uid-owner ${appuid} -j CLASH_OUT
+            ${iptables_wait} -t mangle -A FILTER_OUT_CLASH -p udp --dport 53 -m owner --uid-owner ${appuid} -j CLASH_OUT
             ${iptables_wait} -t mangle -A FILTER_OUT_CLASH -m owner --uid-owner ${appuid} -j ACCEPT
         done
 
         ${iptables_wait} -t mangle -A FILTER_OUT_CLASH -m owner ! --gid-owner ${Clash_group} -j CLASH_OUT
     elif [ "${mode}" = "whitelist" ] ; then
+    ${iptables_wait} -t mangle -A FILTER_OUT_CLASH -p udp --dport 1053 -j CLASH_OUT
+    ${iptables_wait} -t mangle -A FILTER_OUT_CLASH -p udp --dport 53 -j CLASH_OUT
         for appuid in `cat ${appuid_file} | sort -u` ; do
             ${iptables_wait} -t mangle -A FILTER_OUT_CLASH -m owner --uid-owner ${appuid} -j CLASH_OUT
         done
